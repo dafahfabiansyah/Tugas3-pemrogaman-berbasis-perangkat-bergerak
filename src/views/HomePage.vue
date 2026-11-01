@@ -3,22 +3,30 @@
     <ion-header>
       <ion-toolbar color="primary">
         <ion-title>Crypto Prices</ion-title>
-        <ion-buttons slot="end">
-          <ion-button @click="fetchData" fill="clear">
-            <ion-icon slot="icon-only" name="refresh" />
-          </ion-button>
-        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="ion-padding">
       <!-- Search/Filter -->
-      <ion-searchbar
-        v-model="searchQuery"
-        placeholder="Cari crypto (nama/symbol)..."
-        debounce="300"
-        class="mb-4"
-      />
+      <div class="search-controls">
+        <ion-searchbar
+          v-model="searchQuery"
+          placeholder="Cari crypto (nama/symbol)..."
+          :debounce="300"
+          class="search-input"
+        />
+        <ion-button
+          @click="fetchData"
+          fill="solid"
+          color="primary"
+          class="refresh-button"
+          :disabled="loading"
+          aria-label="Refresh data"
+          title="Refresh data"
+        >
+          <ion-icon slot="icon-only" :icon="refresh" />
+        </ion-button>
+      </div>
 
       <!-- Loading Skeleton -->
       <div v-if="loading && !error" class="skeleton-list">
@@ -96,7 +104,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonPage, IonSearchbar, IonButton, IonIcon, IonRefresher, IonRefresherContent } from '@ionic/vue';
-import { refresh, alertCircleOutline, searchOutline, arrowDownOutline, logoBitcoin, logoEthereum, cardOutline } from 'ionicons/icons';
+import { refresh } from 'ionicons/icons';
 
 const API_URL = 'https://api.coinlore.net/api/tickers/';
 
@@ -194,9 +202,25 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Searchbar spacing */
-.mb-4 {
+/* Search and refresh controls */
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 1rem;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  padding-inline: 0;
+}
+
+.refresh-button {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+  --background-hover: var(--ion-color-primary-shade);
+  --background-activated: var(--ion-color-primary-shade);
 }
 
 /* Skeleton Loading */
